@@ -1,1 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Formulari d'informació</title>
+    <style>
+        #infoDiv {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Introduïu les vostres dades:</h1>
+    <form id="infoForm">
+        <label for="nom">Nom:</label>
+        <input type="text" id="nom" required><br><br>
 
+        <label for="cognom">Cognom:</label>
+        <input type="text" id="cognom" required><br><br>
+
+        <label for="edat">Edat:</label>
+        <input type="number" id="edat" required><br><br>
+
+        <input type="button" value="Guardar Informació" onclick="guardarInformacio()">
+    </form>
+
+    <div id="infoDiv">
+        <h2>La vostra informació:</h2>
+        <p id="info"></p>
+    </div>
+
+    <script>
+        function Persona(nom, cognom, edat) {
+            this.nom = nom;
+            this.cognom = cognom;
+            this.edat = edat;
+        }
+
+        Persona.prototype.mostrarInfo = function () {
+            return "Nom: " + this.nom + "<br>Cognom: " + this.cognom + "<br>Edat: " + this.edat;
+        };
+
+        function guardarInformacio() {
+            var nom = document.getElementById("nom").value;
+            var cognom = document.getElementById("cognom").value;
+            var edat = document.getElementById("edat").value;
+
+            var persona = new Persona(nom, cognom, edat);
+            var infoDiv = document.getElementById("infoDiv");
+            var infoParagraph = document.getElementById("info");
+
+            infoParagraph.innerHTML = persona.mostrarInfo();
+            infoDiv.style.display = "block";
+        }
+    </script>
+</body>
+</html>
