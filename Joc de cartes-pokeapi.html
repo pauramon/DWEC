@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        
+        .carta {
+            border: 1px solid black;
+            margin: 10px;
+            padding: 10px;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .seleccionada {
+            box-shadow: 0 0 10px limegreen;
+        }
+
+        body { 
+            background-image: url(fondo.jpg) ;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        #contenedor-cartas{
+
+            margin-top: 25px;
+
+        }
+
+    </style>
+    <title>Juego de cartas</title>
+</head>
+<body>
+    <h1 style="margin-bottom: 50px;">Hola PokeAPI</h1>
+    <label for="numCartas">Elige cuántos Pokémon quieres:</label>
+    <input type="number" id="numCartas" min="1" max="10" value="5">
+    <button onclick="obtenerYMostrarCartas()">Mostrar Cartas</button>
+    <button onClick="window.location.reload();">Borrar</button>
+    
+    <div id="contenedor-cartas"></div>
+    <script>
+        function obtenerYMostrarCartas() {
+            const numCartas = document.getElementById("numCartas").value;
+            if (numCartas < 1 || numCartas > 10) {
+                alert("Ingrese un número válido entre 1 y 10.");
+                return;
+            }
+
+            const contenedorCartas = document.getElementById("contenedor-cartas");
+            contenedorCartas.innerHTML = ""; 
+
+            let cartasSeleccionadas = [];
+
+            function obtenerDatosPokemon() {
+                const promesas = [];
+
+                for (let i = 0; i < numCartas; i++) {
+                    const idPokemonAleatorio = Math.floor(Math.random() * 898) + 1;
+                    const url = `https://pokeapi.co/api/v2/pokemon/${idPokemonAleatorio}`;
+                    promesas.push(fetch(url).then(respuesta => respuesta.json()));
+                }
+
+                Promise.all(promesas)
+                    .then(datosPokemonArray => {
+                        datosPokemonArray.forEach(datosPokemon => {
+                            crearCarta(datosPokemon);
+                        });
+                    })
+                    .catch(error => console.error("Error al obtener datos de Pokémon:", error));
+            }
+
+            function crearCarta(datosPokemon) {
+                const carta = document.createElement("div");
+                carta.classList.add("carta");
+
+                carta.innerHTML = `
+                    <img src="${datosPokemon.sprites.front_default}" alt="${datosPokemon.name}">
+                    <p>Nombre: ${datosPokemon.name}</p>
+                    <p>Tipo: ${datosPokemon.types[0].type.name}</p>
+                    <p>Ataque: ${datosPokemon.stats[1].base_stat}</p>
+                    <p>Defensa: ${datosPokemon.stats[2].base_stat}</p>
+                `;
+
+                carta.addEventListener("click", () => alternarSeleccionCarta(carta));
+
+                contenedorCartas.appendChild(carta);
+            }
+
+            function alternarSeleccionCarta(carta) {
+                carta.classList.toggle("seleccionada");
+
+                if (carta.classList.contains("seleccionada")) {
+                    cartasSeleccionadas.push(carta);
+                } else {
+                    cartasSeleccionadas = cartasSeleccionadas.filter(cartaSeleccionada => cartaSeleccionada !== carta);
+                }
+
+                if (cartasSeleccionadas.length === 2) {
+                    setTimeout(() => {
+                        realizarBatalla(cartasSeleccionadas);
+                        cartasSeleccionadas.forEach(cartaSeleccionada => cartaSeleccionada.classList.remove("seleccionada"));
+                        cartasSeleccionadas = [];
+                    }, 1000);
+                }
+            }
+
+            function realizarBatalla(cartas) {
+                const ataqueAtacante = parseInt(cartas[0].querySelector("p:nth-child(4)").textContent.split(":")[1]);
+                const defensaDefensor = parseInt(cartas[1].querySelector("p:nth-child(5)").textContent.split(":")[1]);
+
+                if (ataqueAtacante > defensaDefensor) {
+                    alert(`${cartas[0].querySelector("p:nth-child(2)").textContent.split(":")[1]} gana`);
+                } else if (ataqueAtacante < defensaDefensor) {
+                    alert(`${cartas[1].querySelector("p:nth-child(2)").textContent.split(":")[1]} gana`);
+                } else {
+                    alert("¡Es un empate!");
+                }
+            }
+
+            obtenerDatosPokemon();
+        }
+    </script>
+</body>
+</html>
