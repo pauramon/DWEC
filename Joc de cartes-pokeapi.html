@@ -39,7 +39,19 @@
     <button onclick="obtenerYMostrarCartas()">Mostrar Cartas</button>
     <button onClick="window.location.reload();">Borrar</button>
     
-    <div id="contenedor-cartas"></div>
+    <div id="contenedor-cartas">
+        
+        <template id="cartaTemplate">
+            <div class="carta">
+                <img src="" alt="">
+                <p>Nombre: </p>
+                <p>Tipo: </p>
+                <p>Ataque: </p>
+                <p>Defensa: </p>
+            </div>
+        </template>
+    </div>
+
     <script>
         function obtenerYMostrarCartas() {
             const numCartas = document.getElementById("numCartas").value;
