@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .contenedor-jugador {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+    
+        .carta {
+            border: 1px solid black;
+            margin: 10px;
+            padding: 10px;
+            width: calc(20% - 20px);
+            box-sizing: border-box;
+            display: inline-block;
+            cursor: pointer;
+        }
+    
+        .seleccionada {
+            box-shadow: 0 0 10px limegreen;
+        }
+    
+        body {
+            background-image: url(fondo.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        #boton{
+            margin-left: 850px;
+        }
+        h1{
+            text-align: center;
+        }
+    
+        #contenedor-jugador1,
+        #contenedor-jugador2 {
+            margin-top: 25px;
+        }
+        img{
+            max-width: 150px;
+            max-height: 150px;
+        }
+    </style>
+    
+    <title>Juego de cartas</title>
+</head>
+<body>
+    <h1 style="margin-bottom: 50px;">Juego de Kung Fu Panda</h1>
+
+    <button onclick="iniciarJuego()" id="boton">Iniciar Juego</button>
+    <button onClick="window.location.reload();">Borrar</button>
+    <h1>Jugador 1</h1>
+    <div id="contenedor-jugador1"></div>
+    <h1>Jugador 2</h1>
+    <div id="contenedor-jugador2"></div>
+
+    <script>
+        function iniciarJuego() {
+            const cartas = [
+                { "nom": "Po", "atac": 90, "defensa": 80, "velocitat": 10,  "imatge": "po.jpg" },
+                { "nom": "Tigresa", "atac": 85, "defensa": 75, "velocitat": 9,  "imatge": "tigresa.png" },
+                { "nom": "Mono", "atac": 70, "defensa": 60, "velocitat": 8,  "imatge": "mono.jpg" },
+                { "nom": "Grulla", "atac": 75, "defensa": 70, "velocitat": 7,  "imatge": "grulla.jpg" },
+                { "nom": "Tai Lung", "atac": 88, "defensa": 82, "velocitat": 9,  "imatge": "tailung.jpg" },
+                { "nom": "Shifu", "atac": 86, "defensa": 88, "velocitat": 8,  "imatge": "shifu.jpg" },
+                { "nom": "Víbora", "atac": 20, "defensa": 30, "velocitat": 5, "imatge": "vibora.jpg" },
+                { "nom": "Maestro Oogway", "atac": 78, "defensa": 75, "velocitat": 7,"imatge": "oogway.jpg" },
+                { "nom": "Maestro Mantis", "atac": 87, "defensa": 80, "velocitat": 9,"imatge": "mantis.jpg" },
+                { "nom": "Maestro Rino", "atac": 92, "defensa": 85, "velocitat": 8,"imatge": "rino.jpg" }
+            ];
+
+            const contenedorJugador1 = document.getElementById("contenedor-jugador1");
+            const contenedorJugador2 = document.getElementById("contenedor-jugador2");
+
+            // Shuffle para distribuir cartas aleatoriamente entre los jugadores
+            const cartasShuffle = cartas.sort(() => Math.random() - 0.5);
+
+            for (let i = 0; i < 5; i++) {
+                const jugador1Carta = crearCarta(cartasShuffle[i]);
+                const jugador2Carta = crearCarta(cartasShuffle[i + 5]);
+
+                contenedorJugador1.appendChild(jugador1Carta);
+                contenedorJugador2.appendChild(jugador2Carta);
+            }
+        }
+
+        function crearCarta(datosCarta) {
+            const carta = document.createElement("div");
+            carta.classList.add("carta");
+
+            carta.innerHTML = `
+                <img src="${datosCarta.imatge}" alt="${datosCarta.nom}">
+                <p>Nombre: ${datosCarta.nom}</p>
+                <p>Ataque: ${datosCarta.atac}</p>
+                <p>Defensa: ${datosCarta.defensa}</p>
+                <p>Velocidad: ${datosCarta.velocitat}</p>
+            `;
+
+            carta.addEventListener("click", () => alternarSeleccionCarta(carta));
+
+            return carta;
+        }
+
+        function alternarSeleccionCarta(carta) {
+            carta.classList.toggle("seleccionada");
+        }
+    </script>
+</body>
+</html>
